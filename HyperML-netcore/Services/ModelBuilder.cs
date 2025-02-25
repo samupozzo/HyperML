@@ -63,7 +63,8 @@ namespace HyperML.Services
             var pipeline = BuildPipeline();
             var model = pipeline.Fit(_trainingData);
 
-            return new TrainedModel<TData, TLabel>(_mlContext, model, _trainingData);
+            return new TrainedModel<TData, TLabel>(_mlContext, model, _trainingData, _task, _featureColumns, _labelColumn);
+
         }
 
         private IEstimator<ITransformer> BuildPipeline()
