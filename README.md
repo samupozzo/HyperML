@@ -169,6 +169,22 @@ fineTunedModel.SetL2Regularization(0.015f);
 - **PrintMetrics():**  
   Returns a human-readable string representation of all model evaluation metrics.
 
+### IModelTuning<TData, TLabel>
+- **FineTune(IEnumerable<TData> finetuningData, int maximumNumberOfIterations = 100, double l2Regularization = 0.01):**  
+  Fine tunes the model using the provided additional data.
+  
+- **GetMaximumNumberOfIterations():**  
+  Retrieves the current setting for the maximum number of iterations used during fine tuning.
+
+- **SetMaximumNumberOfIterations(int iterations):**  
+  Allows you to set the maximum number of iterations.
+
+- **GetL2Regularization():**  
+  Retrieves the current L2 regularization value.
+
+- **SetL2Regularization(float regularization):**  
+  Allows you to set the L2 regularization value.  
+
 ## Contributing
 
 Contributions to HyperML are welcome. Please open an issue or a pull request if you discover any bugs or have suggestions for improvements.
