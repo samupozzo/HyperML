@@ -12,7 +12,8 @@ HyperML is a simple and fluent API built on top of ML.NET to facilitate the crea
 - **Model Training & Evaluation:** Train models and evaluate them using standard ML.NET metrics.
 - **Model Persistence:** Save and load trained models for deployment or future use.
 - **Extensibility:** Easily extend or customize pipelines by integrating custom transformations or trainers.
-
+-  **Fine Tuning** for further model improvement
+  
 ## Architecture
 
 The API is organized into the following components:
@@ -20,11 +21,30 @@ The API is organized into the following components:
 - **Interfaces:** Define the contracts for model building, trained models, and model metrics.
     - `IModelBuilder<TData, TLabel>`: Interface for configuring and training models.
     - `ITrainedModel<TData, TLabel>`: Interface providing prediction, evaluation, saving, and loading operations.
+    - `IModelTuning<TData, TLabel>`: Interface for fine-tuning models.
     - `IModelMetrics`: Interface for reporting evaluation metrics.
 - **Models:** Contains enumerations and data models such as `MLTask`, which specifies the type of machine learning task.
 - **Services:** Implements the interfaces using ML.NET. These include providers for building pipelines, training the models, and computing metrics.
 - **Factory:** A static factory (`HyperMLFactory`) that helps create new model builders.
 
+
+## Fine Tuning
+
+HyperML provides an API for fine tuning an already trained model using additional training data. With fine tuning, you can adjust the model's hyperparameters — such as the maximum number of iterations and the L2 regularization value — to further improve performance without retraining from scratch.
+
+The `IModelTuning` interface defines the following methods for managing fine tuning parameters:
+
+- `ITrainedModel<TData, TLabel> FineTune(IEnumerable<TData> finetuningData, int maximumNumberOfIterations = 100, double l2Regularization = 0.01)`
+  - Fine tunes the model using the provided additional data.
+- `int GetMaximumNumberOfIterations()`
+  - Retrieves the current setting for the maximum number of iterations used during fine tuning.
+- `void SetMaximumNumberOfIterations(int iterations)`
+  - Allows you to set the maximum number of iterations.
+- `float GetL2Regularization()`
+  - Retrieves the current L2 regularization value.
+- `void SetL2Regularization(float regularization)`
+  - Allows you to set the L2 regularization value.
+    
 ## Installation
 
 1. Ensure that you are running .NET 8.0.
@@ -90,6 +110,21 @@ namespace HyperMLExample
 }
 ```
 
+## Example Usage of model fine tuning
+
+```csharp
+// Assume you have a trained model of type ITrainedModel<YourData, YourLabel>
+var fineTunedModel = trainedModel.FineTune(additionalData, maximumNumberOfIterations: 150, l2Regularization: 0.02);
+
+// Accessing current hyperparameters
+int currentIterations = fineTunedModel.GetMaximumNumberOfIterations();
+float currentL2 = fineTunedModel.GetL2Regularization();
+
+// Modifying hyperparameters
+fineTunedModel.SetMaximumNumberOfIterations(200);
+fineTunedModel.SetL2Regularization(0.015f);
+```
+
 ## API Reference
 
 ### IModelBuilder<TData, TLabel>
@@ -133,6 +168,22 @@ namespace HyperMLExample
 
 - **PrintMetrics():**  
   Returns a human-readable string representation of all model evaluation metrics.
+
+### IModelTuning<TData, TLabel>
+- **FineTune(IEnumerable<TData> finetuningData, int maximumNumberOfIterations = 100, double l2Regularization = 0.01):**  
+  Fine tunes the model using the provided additional data.
+  
+- **GetMaximumNumberOfIterations():**  
+  Retrieves the current setting for the maximum number of iterations used during fine tuning.
+
+- **SetMaximumNumberOfIterations(int iterations):**  
+  Allows you to set the maximum number of iterations.
+
+- **GetL2Regularization():**  
+  Retrieves the current L2 regularization value.
+
+- **SetL2Regularization(float regularization):**  
+  Allows you to set the L2 regularization value.  
 
 ## Contributing
 
